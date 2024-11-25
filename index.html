@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Your Photo</h1>
+    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="photo" required>
+        <br><br>
+        <input type="submit" value="Upload">
+    </form>
+    <p id="message"></p>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const message = document.getElementById("message");
+
+        form.onsubmit = function(event) {
+            event.preventDefault(); // Prevent page reload
+            const formData = new FormData(form);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    message.textContent = "Upload completed successfully!";
+                    message.style.color = "green";
+                } else {
+                    message.textContent = "Upload failed: " + data.message;
+                    message.style.color = "red";
+                }
+            })
+            .catch(() => {
+                message.textContent = "An error occurred. Please try again.";
+                message.style.color = "red";
+            });
+        };
+    </script>
+</body>
+</html>
